@@ -1,0 +1,25 @@
+version: '3'
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./Scripts/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the initialization script
+    ports:
+      - "5432:5432"
+
+  node-app:
+    build: .
+    depends_on:
+      - timescaledb
+    environment:
+      DB_HOST: timescaledb  # Use the service name as the hostname
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "3000:3000"  # Adjust this if your Node.js app is listening on a different port
