@@ -1,7 +1,0 @@
-{
-  "name": "TimescaleDBBenchmark",
-  "version": "1.0.0",
-  "dependencies": {
-    "pg-promise": "^11.5.4"
-  }
-}
