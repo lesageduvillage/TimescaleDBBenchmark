@@ -15,7 +15,20 @@ const db = pgp(connection);
 
 const categories = ['open', 'high', 'low', 'close', 'volume', 'adj_close'];
 const companies = ['AAPL', 'GOOG', 'MSFT', 'AMZN', 'FB', 'TSLA', 'NVDA', 'INTC', 'CSCO', 'CMCSA'];
+
+async function waitForDatabase(){
+    try {
+        await db.connect();
+        console.log('TimeScaleDB connected');
+    } catch (error) {
+        console.log('Waiting for TimeScaleDB to start');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await waitForDatabase();
+    }
+}
+
 async function insertDataIntoTimeScale(){
+    await waitForDatabase();
     const start = Date.now();
     for(let dayIndex = 0; dayIndex < 365; dayIndex++){
         for (let companyIndex = 0; companyIndex < 10; companyIndex++){

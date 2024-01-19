@@ -10,11 +10,17 @@ services:
       - ./Scripts/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the initialization script
     ports:
       - "5432:5432"
+    healthcheck:
+        test: ["CMD", "pg_isready", "-U", "postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
   node-app:
     build: .
     depends_on:
-      - timescaledb
+      timescaledb:
+            condition: service_healthy  # Wait for the database to be ready
     environment:
       DB_HOST: timescaledb  # Use the service name as the hostname
       DB_PORT: 5432
