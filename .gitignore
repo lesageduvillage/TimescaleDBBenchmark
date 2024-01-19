@@ -54,7 +54,4 @@ $RECYCLE.BIN/
 *.sqlite
 *.sqlite3
 
-# package.json
-package-lock.json
-package.json
 ```
