@@ -53,3 +53,8 @@ $RECYCLE.BIN/
 # Database
 *.sqlite
 *.sqlite3
+
+# package.json
+package-lock.json
+package.json
+```
