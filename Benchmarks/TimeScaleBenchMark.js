@@ -83,9 +83,9 @@ async function insertDataIntoPostgresWithJsonB() {
             await db.none('INSERT INTO jsonb_stocks (category, values, symbol) VALUES ($1, $2, $3)', [categories[categoryIndex],[],companies[companyIndex]]);
             var date = new Date();
             for(let dayIndex = 0; dayIndex < 365; dayIndex++) {
-                date.setDate(date.getDate() + 1);
                 // add the new value to the current values
                 await db.none('UPDATE jsonb_stocks SET values = values || $1::jsonb WHERE symbol = $2 AND category = $3', [JSON.stringify([{date: date.toISOString().split('T')[0], value: Math.random()*1000}]), companies[companyIndex], categories[categoryIndex]]);
+                date.setDate(date.getDate() + 1);
             }
         }
     }
@@ -128,9 +128,10 @@ async function updateDataInPostgres(){
 }
 
 async function updateDataInPostgresWithJsonB(){
+    await insertDataIntoPostgresWithJsonB();
     console.log('Updating data in Postgres with jsonb');
     // add a date to the database to update
-    var date = "2024-02-10";
+    var date = new Date().toISOString().split('T')[0];
     const start = Date.now();
     const query = `
   UPDATE jsonb_stocks
@@ -145,6 +146,7 @@ async function updateDataInPostgresWithJsonB(){
   ) WHERE symbol = $2 AND category = $3
 `;
     for (let categoryIndex = 0; categoryIndex < 6; categoryIndex++) {
+        // You can put any value here, it will be replaced by the value in the query and to know that it was replaced
         await db.none(query, [JSON.stringify(69.445), companies[0], categories[categoryIndex]]);
 
     }
@@ -152,15 +154,9 @@ async function updateDataInPostgresWithJsonB(){
     const end = Date.now();
     console.log(`Time it took to update one day of data for one company in postgres with jsonb: ${end-start}ms`);
 }
-
-//insertDataIntoPostgres();
-//insertDataIntoTimeScale();
-//insertDataIntoPostgresWithJsonB();
-//Wait for the data to be inserted before updating it
-
 async function runAllTests(){
-    //await updateDataInTimeScale();
-    //await updateDataInPostgres();
+    await updateDataInTimeScale();
+    await updateDataInPostgres();
     await updateDataInPostgresWithJsonB();
 }
 
