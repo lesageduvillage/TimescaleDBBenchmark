@@ -11,6 +11,12 @@ CREATE TABLE old_stocks(
     symbol TEXT NOT NULL
     );
 
+CREATE TABLE jsonb_stocks(
+    category TEXT NOT NULL,
+    values jsonb NOT NULL,
+    symbol TEXT NOT NULL
+);
+
 SELECT create_hypertable('stocks', 'time');
 
 CREATE INDEX ix_stocks_time ON stocks(time DESC);
